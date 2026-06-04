@@ -310,7 +310,9 @@ AS
     ProductName,
     InventoryDate,
     Count AS InventoryCount,
-    ISNULL(LAG(Count) OVER(PARTITION BY ProductName ORDER BY YEAR(InventoryDate), MONTH(InventoryDate)), 0) AS PreviousMonthCount
+    IIF(MONTH(InventoryDate) = 1, 0,
+        LAG(Count) OVER(PARTITION BY ProductName ORDER BY YEAR(InventoryDate), MONTH(InventoryDate))
+    ) AS PreviousMonthCount
   FROM vProductInventories
   ORDER BY ProductName, YEAR(InventoryDate), MONTH(InventoryDate)
 ;
